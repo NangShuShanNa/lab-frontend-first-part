@@ -11,6 +11,9 @@ import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
 import { useEventStore } from '@/stores/event'
 
+// ✅ Fix import
+import AddEventView from '@/views/event/EventFormView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -30,15 +33,11 @@ const router = createRouter({
         const eventStore = useEventStore()
         return EventService.getEvent(id)
           .then((response) => {
-            // need to setup the data for the event
             eventStore.setEvent(response.data)
           })
           .catch((error) => {
             if (error.response && error.response.status === 404) {
-              return {
-                name: '404-resource-view',
-                params: { resource: 'event' }
-              }
+              return { name: '404-resource-view', params: { resource: 'event' } }
             } else {
               return { name: 'network-error-view' }
             }
@@ -64,6 +63,11 @@ const router = createRouter({
           props: true
         }
       ]
+    },
+    {
+      path: '/add-event', // ✅ new route
+      name: 'add-event',
+      component: AddEventView
     },
     {
       path: '/network-error',
@@ -95,6 +99,7 @@ const router = createRouter({
     }
   }
 })
+
 router.beforeEach(() => {
   nProgress.start()
 })

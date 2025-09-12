@@ -1,12 +1,12 @@
 export interface Event {
-  id: number
+  id?: number              // ✅ optional (backend generates ID)
   category: string
   title: string
   description: string
   location: string
   date: string
   time: string
-  petsAllowed: boolean
+  petAllowed: boolean      // ✅ match backend field name
   organizer: string
 }
 
