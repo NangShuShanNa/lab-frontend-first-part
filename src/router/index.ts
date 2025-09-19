@@ -10,9 +10,12 @@ import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
 import { useEventStore } from '@/stores/event'
+import AuctionListView from '@/views/AuctionListView.vue'
+import AuctionDetailView from '@/views/AuctionDetailView.vue'
 
-// ✅ Fix import
+// ✅ Fix imports
 import AddEventView from '@/views/event/EventFormView.vue'
+import CreateOrganizerView from '@/views/OrganizerView.vue'  // <-- add this
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,9 +68,14 @@ const router = createRouter({
       ]
     },
     {
-      path: '/add-event', // ✅ new route
+      path: '/add-event',
       name: 'add-event',
       component: AddEventView
+    },
+    {
+      path: '/organizers/create',   // ✅ your new route
+      name: 'create-organizer-view',
+      component: CreateOrganizerView
     },
     {
       path: '/network-error',
@@ -85,6 +93,8 @@ const router = createRouter({
       component: NotFoundView,
       props: true
     },
+    { path: '/auctions', name: 'auction-list-view', component: AuctionListView },
+    { path: '/auctions/:id', name: 'auction-detail-view', component: AuctionDetailView },
     {
       path: '/:catchAll(.*)',
       name: 'not-found',

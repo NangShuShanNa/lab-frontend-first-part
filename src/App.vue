@@ -15,6 +15,7 @@ const { message } = storeToRefs(store)
       </div>
       <div class="wrapper">
         <nav class="py-6">
+          <!-- Event -->
           <RouterLink
             class="font-bold text-gray-700"
             exact-active-class="text-green-500"
@@ -23,6 +24,18 @@ const { message } = storeToRefs(store)
             Event
           </RouterLink>
           |
+
+          <!-- Auction -->
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'auction-list-view' }"
+          >
+            Auction
+          </RouterLink>
+          |
+
+          <!-- About -->
           <RouterLink
             class="font-bold text-gray-700"
             exact-active-class="text-green-500"
@@ -31,12 +44,24 @@ const { message } = storeToRefs(store)
             About
           </RouterLink>
           |
+
+          <!-- New Event -->
           <RouterLink
             class="font-bold text-gray-700"
             exact-active-class="text-green-500"
             :to="{ name: 'add-event' }"
           >
             New Event
+          </RouterLink>
+          |
+
+          <!-- Organizer -->
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'create-organizer-view' }"
+          >
+            Organizer
           </RouterLink>
         </nav>
       </div>

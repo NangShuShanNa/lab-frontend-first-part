@@ -2,6 +2,7 @@ import axios from 'axios'
 import type { Event } from '@/types'
 import type { AxiosResponse } from 'axios'
 
+
 const apiClient = axios.create({
   baseURL: 'http://localhost:8080/',
   withCredentials: false,
@@ -25,5 +26,12 @@ export default {
   // ✅ create new event (this was missing!)
   createEvent(event: Event): Promise<AxiosResponse<Event>> {
     return apiClient.post('/events', event)
+  },
+  getEventsByKeyword(keyword: string, perPage: number, page: number):
+    Promise<AxiosResponse<Event[]>> {
+    return apiClient.get<Event[]>(
+      '/events?title=' + keyword + '&_limit=' + perPage + '&_page=' + page
+    )
   }
+
 }
