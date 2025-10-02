@@ -14,7 +14,10 @@ const event = ref<Event>({
   location: '',
   date: '',
   time: '',
-  organizer: '',
+  organizer: {
+    id:0,
+    name: ''
+  },
   petAllowed: false   // ✅ match backend
 })
 

@@ -7,7 +7,8 @@ export interface Event {
   date: string
   time: string
   petAllowed: boolean      // ✅ match backend field name
-  organizer: string
+  organizer: Organizer
+
 }
 
 export interface MessageState {
@@ -20,6 +21,6 @@ export interface EventState {
 
 export interface Organizer {
   id: number
-  organizationName: string
-  address: string
+
+  name: string
 }

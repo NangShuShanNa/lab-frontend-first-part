@@ -17,6 +17,8 @@ defineProps<{
     >
       <!-- Event title -->
       <h2>{{ event.title }}</h2>
+      <span>by</span>
+      <h5>{{event.organizer.name}}</h5>
 
       <!-- Time and Date -->
       <span>{{ event.time }} on {{ event.date }}</span>
