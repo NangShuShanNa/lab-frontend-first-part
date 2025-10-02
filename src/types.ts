@@ -22,5 +22,5 @@ export interface EventState {
 export interface Organizer {
   id: number
 
-  name: string
+  organizationName: string
 }

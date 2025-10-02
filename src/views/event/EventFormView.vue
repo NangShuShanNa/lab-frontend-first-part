@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { Event } from '@/types'
 import type { AxiosResponse } from 'axios'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import EventService from '@/services/EventService'
+import OrganizerService from '@/services/OrganizerService'
 import { useRouter } from 'vue-router'
-import { useMessageStore } from '@/stores/message'   // flash message store
+import { useMessageStore } from '@/stores/message'
+import BaseInput from '@/components/BaseInput.vue'
+import BaseSelect from '@/components/BaseSelect.vue'   // ✅ Import new select component
 
-// define reactive event object (⚠️ no id)
+// ✅ Event model (only organizer.id is needed for submission)
 const event = ref<Event>({
   category: '',
   title: '',
@@ -15,42 +18,48 @@ const event = ref<Event>({
   date: '',
   time: '',
   organizer: {
-    id:0,
-    name: ''
+    id: 0,
+    organizationName: ''
   },
-  petAllowed: false   // ✅ match backend
+  petAllowed: false
 })
 
-// router + store instance
+// ✅ List of organizers from backend
+const organizers = ref<{ id: number; organizationName: string }[]>([])
+
 const router = useRouter()
 const store = useMessageStore()
 
-// save handler → calls backend
+// Load organizers
+onMounted(() => {
+  OrganizerService.getOrganizers()
+    .then((res) => {
+      organizers.value = res.data
+      console.log('✅ Loaded organizers:', organizers.value)
+    })
+    .catch((err) => {
+      console.error('❌ Error loading organizers:', err)
+    })
+})
+
+// Save event
 function saveEvent() {
+  console.log('👉 Submitting event:', JSON.stringify(event.value, null, 2))
+
   EventService.createEvent(event.value)
     .then((response: AxiosResponse<Event>) => {
-      // ✅ Show success flash message
-      store.updateMessage('✅ You have successfully added a new event: ' + response.data.title)
+      store.updateMessage('✅ Event created: ' + response.data.title)
+      setTimeout(() => store.resetMessage(), 3000)
 
-      setTimeout(() => {
-        store.resetMessage()
-      }, 3000)
-
-      // Redirect to detail page
       router.push({
         name: 'event-detail-view',
         params: { id: response.data.id }
       })
     })
-    .catch(() => {
-      // ✅ Show error flash message
+    .catch((error) => {
+      console.error('❌ Error:', error)
       store.updateMessage('❌ Network error, please try again.')
-
-      setTimeout(() => {
-        store.resetMessage()
-      }, 3000)
-
-      // Redirect to error page
+      setTimeout(() => store.resetMessage(), 3000)
       router.push({ name: 'network-error-view' })
     })
 }
@@ -58,50 +67,29 @@ function saveEvent() {
 
 <template>
   <div>
-    <h1>Create an Event</h1>
+    <h1>Create Event</h1>
 
-    <!-- ✅ Flash message -->
+    <!-- Flash message -->
     <p v-if="store.message" :class="['flash', store.message.includes('❌') ? 'error' : 'success']">
       {{ store.message }}
     </p>
 
     <form @submit.prevent="saveEvent" class="event-form">
-      <div class="form-group">
-        <label>Category</label>
-        <input v-model="event.category" type="text" placeholder="Category" class="field" />
-      </div>
+      <BaseInput v-model="event.category" type="text" label="Category" />
+      <BaseInput v-model="event.title" type="text" label="Title" />
+      <BaseInput v-model="event.description" type="text" label="Description" />
+      <BaseInput v-model="event.location" type="text" label="Location" />
+      <BaseInput v-model="event.date" type="date" label="Date" />
+      <BaseInput v-model="event.time" type="time" label="Time" />
 
-      <div class="form-group">
-        <label>Title</label>
-        <input v-model="event.title" type="text" placeholder="Title" class="field" />
-      </div>
+      <!-- ✅ Organizer dropdown using BaseSelect -->
+      <BaseSelect
+        v-model="event.organizer.id"
+        :options="organizers"
+        label="Select Organizer"
+      />
 
-      <div class="form-group">
-        <label>Description</label>
-        <input v-model="event.description" type="text" placeholder="Description" class="field" />
-      </div>
-
-      <div class="form-group">
-        <label>Location</label>
-        <input v-model="event.location" type="text" placeholder="Location" class="field" />
-      </div>
-
-      <div class="form-group">
-        <label>Date</label>
-        <input v-model="event.date" type="date" class="field" />
-      </div>
-
-      <div class="form-group">
-        <label>Time</label>
-        <input v-model="event.time" type="time" class="field" />
-      </div>
-
-      <div class="form-group">
-        <label>Organizer</label>
-        <input v-model="event.organizer" type="text" placeholder="Organizer" class="field" />
-      </div>
-
-      <!-- ✅ fixed name -->
+      <!-- Pets allowed -->
       <div class="form-group">
         <label>
           <input v-model="event.petAllowed" type="checkbox" />
@@ -120,13 +108,12 @@ function saveEvent() {
   flex-direction: column;
   gap: 1rem;
   max-width: 400px;
-  margin-bottom: 3rem;
 }
 .form-group {
   display: flex;
   flex-direction: column;
 }
-.field {
+select {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -138,8 +125,6 @@ function saveEvent() {
   padding: 0.7rem 1.2rem;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  align-self: flex-start;
 }
 .button:hover {
   background-color: #45a049;

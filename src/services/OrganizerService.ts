@@ -1,5 +1,4 @@
 import axios from 'axios'
-import type { Organizer } from '@/types'
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8080/',
@@ -11,10 +10,11 @@ const apiClient = axios.create({
 })
 
 export default {
-  createOrganizer(organizer: Organizer) {
-    return apiClient.post('/organizers', organizer)
-  },
-  getOrganizers(perPage: number, page: number) {
-    return apiClient.get('/organizers?_limit=' + perPage + '&_page=' + page)
+  getOrganizers(perPage?: number, page?: number) {
+    let url = '/organizers'
+    if (perPage && page) {
+      url += `?_limit=${perPage}&_page=${page}`
+    }
+    return apiClient.get(url)
   }
 }
