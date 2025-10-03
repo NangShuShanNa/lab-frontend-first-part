@@ -7,9 +7,10 @@ import OrganizerService from '@/services/OrganizerService'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
 import BaseInput from '@/components/BaseInput.vue'
-import BaseSelect from '@/components/BaseSelect.vue'   // ✅ Import new select component
+import BaseSelect from '@/components/BaseSelect.vue'
+import ImageUpload from '@/components/ImageUpload.vue'   // ✅ Import ImageUpload
 
-// ✅ Event model (only organizer.id is needed for submission)
+// ✅ Event model
 const event = ref<Event>({
   category: '',
   title: '',
@@ -21,16 +22,17 @@ const event = ref<Event>({
     id: 0,
     organizationName: ''
   },
+  images: [],   // ✅ Add images array
   petAllowed: false
 })
 
-// ✅ List of organizers from backend
+// ✅ Organizers list
 const organizers = ref<{ id: number; organizationName: string }[]>([])
 
 const router = useRouter()
 const store = useMessageStore()
 
-// Load organizers
+// ✅ Load organizers
 onMounted(() => {
   OrganizerService.getOrganizers()
     .then((res) => {
@@ -42,7 +44,7 @@ onMounted(() => {
     })
 })
 
-// Save event
+// ✅ Save event
 function saveEvent() {
   console.log('👉 Submitting event:', JSON.stringify(event.value, null, 2))
 
@@ -69,7 +71,7 @@ function saveEvent() {
   <div>
     <h1>Create Event</h1>
 
-    <!-- Flash message -->
+    <!-- ✅ Flash message -->
     <p v-if="store.message" :class="['flash', store.message.includes('❌') ? 'error' : 'success']">
       {{ store.message }}
     </p>
@@ -82,14 +84,18 @@ function saveEvent() {
       <BaseInput v-model="event.date" type="date" label="Date" />
       <BaseInput v-model="event.time" type="time" label="Time" />
 
-      <!-- ✅ Organizer dropdown using BaseSelect -->
+      <!-- ✅ Organizer dropdown -->
       <BaseSelect
         v-model="event.organizer.id"
         :options="organizers"
         label="Select Organizer"
       />
 
-      <!-- Pets allowed -->
+      <!-- ✅ Image upload -->
+      <h3>The image of the Event</h3>
+      <ImageUpload v-model="event.images" />
+
+      <!-- ✅ Pets allowed -->
       <div class="form-group">
         <label>
           <input v-model="event.petAllowed" type="checkbox" />

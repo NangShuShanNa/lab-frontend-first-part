@@ -8,6 +8,7 @@ export interface Event {
   time: string
   petAllowed: boolean      // ✅ match backend field name
   organizer: Organizer
+  images:string[]
 
 }
 
