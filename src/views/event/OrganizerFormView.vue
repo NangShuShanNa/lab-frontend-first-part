@@ -9,7 +9,8 @@ const saving = ref(false)
 const organizer = ref({
   organizationName: '',
   address: '',
-  email: ''
+  email: '',
+  imageUrl: ''   // ✅ only 1 image allowed
 })
 
 const saveOrganizer = async () => {
@@ -18,7 +19,8 @@ const saveOrganizer = async () => {
     const response = await OrganizerService.createOrganizer(organizer.value)
     if (response.status === 201) {   // ✅ check CREATED
       alert('✅ Organizer created successfully!')
-      router.push({ name: 'organizer-list-view' })
+      // ✅ redirect to detail view instead of list
+      router.push({ name: 'organizer-detail-view', params: { id: response.data.id } })
     }
   } catch (error: any) {
     console.error("Save failed:", error.response?.data || error.message)
@@ -41,6 +43,10 @@ const saveOrganizer = async () => {
 
       <label class="block mb-2">Address</label>
       <input v-model="organizer.address" class="border w-full p-2 mb-4" required />
+
+      <!-- ✅ New field for image -->
+      <label class="block mb-2">Image URL</label>
+      <input v-model="organizer.imageUrl" type="text" class="border w-full p-2 mb-4" required />
 
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full" :disabled="saving">
         {{ saving ? 'Saving...' : 'Save' }}

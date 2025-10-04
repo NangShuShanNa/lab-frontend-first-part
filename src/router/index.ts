@@ -13,9 +13,14 @@ import { useEventStore } from '@/stores/event'
 import AuctionListView from '@/views/AuctionListView.vue'
 import AuctionDetailView from '@/views/AuctionDetailView.vue'
 
-// ✅ Fix imports
+// ✅ Event form
 import AddEventView from '@/views/event/EventFormView.vue'
-import CreateOrganizerView from '@/views/OrganizerView.vue'  // <-- add this
+
+// ✅ Organizer form (create)
+import CreateOrganizerView from '@/views/OrganizerView.vue'
+
+// ✅ Organizer list view
+import OrganizerListView from '@/views/event/OrganizerListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,7 +29,9 @@ const router = createRouter({
       path: '/',
       name: 'event-list-view',
       component: EventListView,
-      props: (route) => ({ page: parseInt(route.query.page?.toString() || '1') })
+      props: (route) => ({
+        page: parseInt(route.query.page?.toString() || '1')
+      })
     },
     {
       path: '/event/:id',
@@ -40,7 +47,10 @@ const router = createRouter({
           })
           .catch((error) => {
             if (error.response && error.response.status === 404) {
-              return { name: '404-resource-view', params: { resource: 'event' } }
+              return {
+                name: '404-resource-view',
+                params: { resource: 'event' }
+              }
             } else {
               return { name: 'network-error-view' }
             }
@@ -72,10 +82,24 @@ const router = createRouter({
       name: 'add-event',
       component: AddEventView
     },
+    // ✅ Organizer list
     {
-      path: '/organizers/create',   // ✅ your new route
+      path: '/organizers',
+      name: 'organizer-list-view',
+      component: OrganizerListView
+    },
+    // ✅ Organizer create
+    {
+      path: '/organizers/create',
       name: 'create-organizer-view',
       component: CreateOrganizerView
+    },
+    // ✅ Organizer detail
+    {
+      path: '/organizers/:id',
+      name: 'organizer-detail-view',
+      component: () => import('@/views/event/OrganizerDetailView.vue'),
+      props: true
     },
     {
       path: '/network-error',
@@ -93,8 +117,16 @@ const router = createRouter({
       component: NotFoundView,
       props: true
     },
-    { path: '/auctions', name: 'auction-list-view', component: AuctionListView },
-    { path: '/auctions/:id', name: 'auction-detail-view', component: AuctionDetailView },
+    {
+      path: '/auctions',
+      name: 'auction-list-view',
+      component: AuctionListView
+    },
+    {
+      path: '/auctions/:id',
+      name: 'auction-detail-view',
+      component: AuctionDetailView
+    },
     {
       path: '/:catchAll(.*)',
       name: 'not-found',

@@ -17,6 +17,11 @@ export default {
     return apiClient.get(url)
   },
 
+  // ✅ New method to get one organizer by ID
+  getOrganizer(id: string | number) {
+    return apiClient.get(`/organizers/${id}`)
+  },
+
   createOrganizer(organizer: any) {
     return apiClient.post('/organizers', organizer)
   }

@@ -9,14 +9,20 @@ const router = useRouter()
 const organizer = ref({
   organizationName: '',
   email: '',
-  address: ''
+  address: '',
+  imageUrl: ''   // ✅ only 1 image allowed
 })
 
 const saveOrganizer = () => {
   OrganizerService.createOrganizer(organizer.value)
-    .then(() => {
+    .then((res) => {
       alert('Organizer created successfully!')
-      router.push({ name: 'organizer-list-view' }) // ✅ redirect after save
+
+      // ✅ redirect to the detail view using returned ID
+      router.push({
+        name: 'organizer-detail-view',
+        params: { id: res.data.id }
+      })
     })
     .catch((err) => {
       console.error('Error saving organizer:', err)
@@ -37,6 +43,9 @@ const saveOrganizer = () => {
 
       <label class="block mb-2">Address</label>
       <input v-model="organizer.address" class="border w-full p-2 mb-4" required />
+
+      <label class="block mb-2">Image URL</label>
+      <input v-model="organizer.imageUrl" type="text" class="border w-full p-2 mb-4" required />
 
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
         Save
