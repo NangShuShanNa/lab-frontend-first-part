@@ -21,6 +21,7 @@ import CreateOrganizerView from '@/views/OrganizerView.vue'
 
 // ✅ Organizer list view
 import OrganizerListView from '@/views/event/OrganizerListView.vue'
+import LoginView from '@/views/event/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -127,6 +128,12 @@ const router = createRouter({
       name: 'auction-detail-view',
       component: AuctionDetailView
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+
     {
       path: '/:catchAll(.*)',
       name: 'not-found',
