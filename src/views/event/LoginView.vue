@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import InputText from '@/components/InputText.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useMessageStore } from '@/stores/message'   // ✅ new import for Step 5.4
 import * as yup from 'yup'
 import { useField, useForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
 
-// ✅ Import Pinia Auth Store
+// ✅ initialize router
+const router = useRouter()
+
+// ✅ stores
 const authStore = useAuthStore()
+const messageStore = useMessageStore()   // ✅ new store instance
 
-// ✅ Simplified validation schema (as required in step 4.2)
+// ✅ Validation schema
 const validationSchema = yup.object({
   email: yup.string().required('The email is required'),
   password: yup.string().required('The password is required')
 })
 
-// ✅ Setup form
+// ✅ Form setup
 const { errors, handleSubmit } = useForm({
   validationSchema,
   initialValues: {
@@ -26,11 +32,20 @@ const { errors, handleSubmit } = useForm({
 const { value: email } = useField<string>('email')
 const { value: password } = useField<string>('password')
 
-// ✅ Handle form submission
+// ✅ Handle form submission (updated for Step 5.3 + 5.4)
 const onSubmit = handleSubmit((values) => {
-  console.log('Form submitted!')
-  console.log(values)
-  authStore.login(values.email, values.password)
+  authStore
+    .login(values.email, values.password)
+    .then(() => {
+      console.log('login success')
+      router.push({ name: 'event-list-view' })
+    })
+    .catch(() => {
+      messageStore.updateMessage('could not login')   // ✅ show message
+      setTimeout(() => {
+        messageStore.resetMessage()                   // ✅ clear after 3 s
+      }, 3000)
+    })
 })
 </script>
 
@@ -57,7 +72,6 @@ const onSubmit = handleSubmit((values) => {
             Email address
           </label>
           <div class="mt-2">
-            <!-- ✅ Type changed from 'email' to 'text' (as required in step 4.2) -->
             <InputText
               type="text"
               v-model="email"

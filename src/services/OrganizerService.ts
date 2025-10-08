@@ -1,12 +1,4 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: 'http://localhost:8080',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-})
+import apiClient from './AxiosClient'
 
 export default {
   getOrganizers(perPage?: number, page?: number) {
@@ -17,7 +9,7 @@ export default {
     return apiClient.get(url)
   },
 
-  // ✅ New method to get one organizer by ID
+  // ✅ Get one organizer by ID
   getOrganizer(id: string | number) {
     return apiClient.get(`/organizers/${id}`)
   },
