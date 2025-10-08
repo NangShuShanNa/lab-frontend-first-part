@@ -24,6 +24,7 @@ import OrganizerListView from '@/views/event/OrganizerListView.vue'
 
 // ✅ Auth
 import LoginView from '@/views/event/LoginView.vue'
+import { useAuthStore } from '@/stores/auth'   // ✅ import auth store
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,11 +70,12 @@ const router = createRouter({
       ]
     },
 
-    // ✅ Add event
+    // ✅ Add event (Admin only)
     {
       path: '/add-event',
       name: 'add-event',
-      component: AddEventView
+      component: AddEventView,
+      meta: { requiresAdmin: true }    // ✅ mark as admin-only
     },
 
     // ✅ Organizer routes
@@ -85,7 +87,8 @@ const router = createRouter({
     {
       path: '/organizers/create',
       name: 'create-organizer-view',
-      component: CreateOrganizerView
+      component: CreateOrganizerView,
+      meta: { requiresAdmin: true }    // ✅ only admin can create
     },
     {
       path: '/organizers/:id',
@@ -139,18 +142,26 @@ const router = createRouter({
     }
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    } else {
-      return { top: 0 }
-    }
+    if (savedPosition) return savedPosition
+    else return { top: 0 }
   }
 })
 
-// ✅ nProgress Loading Bar
-router.beforeEach(() => {
+// ✅ Progress bar
+router.beforeEach((to, from, next) => {
   nProgress.start()
+
+  const authStore = useAuthStore()
+
+  // ✅ Check if route requires admin role
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    alert('🚫 You do not have permission to access this page.')
+    next({ name: 'event-list-view' }) // redirect to home
+  } else {
+    next()
+  }
 })
+
 router.afterEach(() => {
   nProgress.done()
 })

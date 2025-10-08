@@ -13,14 +13,14 @@ const { message } = storeToRefs(store)
 const authStore = useAuthStore()
 const router = useRouter()
 
-// ✅ Logout function (Step 6.12)
+// ✅ Logout function
 function logout() {
   authStore.logout()
   router.push({ name: 'login' })
   console.log('🔴 Logged out')
 }
 
-// ✅ Reload user from localStorage when refreshing (Step 6.13)
+// ✅ Reload user from localStorage when refreshing
 const token = localStorage.getItem('access_token')
 const user = localStorage.getItem('user')
 
@@ -66,13 +66,16 @@ if (token && user) {
             About
           </RouterLink>
 
-          <RouterLink
-            class="font-bold text-gray-700"
-            exact-active-class="text-green-500"
-            :to="{ name: 'add-event' }"
-          >
-            New Event
-          </RouterLink>
+          <!-- ✅ Only show New Event if user is admin -->
+          <span v-if="authStore.isAdmin">
+            <RouterLink
+              class="font-bold text-gray-700"
+              exact-active-class="text-green-500"
+              :to="{ name: 'add-event' }"
+            >
+              New Event
+            </RouterLink>
+          </span>
 
           <RouterLink
             class="font-bold text-gray-700"

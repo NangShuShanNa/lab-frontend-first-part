@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
-import type { Organizer } from '@/types'   // ✅ Import Organizer type
+import type { Organizer } from '@/types'
 
-// ✅ Create Axios instance
+// ✅ Axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: false,
@@ -13,26 +13,19 @@ const apiClient: AxiosInstance = axios.create({
   }
 })
 
-// ✅ Define Pinia store for authentication
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
-    // ✅ Organizer that contains nested user with roles
-    user: null as (Organizer & { user?: { roles?: string[] } }) | null
+    user: null as Organizer | null
   }),
 
   getters: {
-    // ✅ Getter to get current user name (Organizer name)
     currentUserName(): string {
-      return this.user?.organizationName || ''
+      return this.user?.name || ''
     },
-
-    // ✅ Fix: Check admin role from nested user
     isAdmin(): boolean {
-      return this.user?.user?.roles?.includes('ROLE_ADMIN') || false
+      return this.user?.roles?.includes('ROLE_ADMIN') || false
     },
-
-    // ✅ For secure requests (Step 6.14)
     authorizationHeader(): string {
       return `Bearer ${this.token}`
     }
@@ -47,7 +40,7 @@ export const useAuthStore = defineStore('auth', {
           password: password
         })
 
-        this.token = response.data.accessToken
+        this.token = response.data.access_token
         this.user = response.data.user
 
         localStorage.setItem('access_token', this.token as string)
@@ -55,7 +48,6 @@ export const useAuthStore = defineStore('auth', {
 
         console.log('✅ Login successful. Token stored:', this.token)
         console.log('👤 User stored:', this.user)
-
         return response
       } catch (error: any) {
         console.error('❌ Login failed:', error.response || error.message)
