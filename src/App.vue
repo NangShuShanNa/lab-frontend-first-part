@@ -6,6 +6,7 @@ import { useMessageStore } from '@/stores/message'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 
+// ✅ Initialize stores
 const store = useMessageStore()
 const { message } = storeToRefs(store)
 
@@ -33,14 +34,55 @@ if (token && user) {
 <template>
   <div class="text-center font-sans text-gray-700 antialias">
     <header class="max-h-screen leading-normal">
-      <!-- Flash message -->
+      <!-- ✅ Flash message -->
       <div id="flashMessage" class="animate-fade" v-if="message">
         <h4>{{ message }}</h4>
       </div>
 
       <div class="wrapper">
         <nav class="py-6 flex justify-center space-x-6">
-          <!-- Show when NOT logged in -->
+          <!-- ✅ Navigation links visible to everyone -->
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'event-list-view' }"
+          >
+            Event
+          </RouterLink>
+
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'auction-list-view' }"
+          >
+            Auction
+          </RouterLink>
+
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'about' }"
+          >
+            About
+          </RouterLink>
+
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'add-event' }"
+          >
+            New Event
+          </RouterLink>
+
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'organizer-list-view' }"
+          >
+            Organizer
+          </RouterLink>
+
+          <!-- ✅ Show when NOT logged in -->
           <ul v-if="!authStore.currentUserName" class="flex navbar-nav ml-auto space-x-6">
             <li class="nav-item px-2">
               <RouterLink to="/register" class="nav-link flex items-center">
@@ -57,7 +99,7 @@ if (token && user) {
             </li>
           </ul>
 
-          <!-- Show when logged in -->
+          <!-- ✅ Show when logged in -->
           <ul v-if="authStore.currentUserName" class="flex navbar-nav ml-auto space-x-6">
             <li class="nav-item px-2">
               <RouterLink to="/profile" class="nav-link flex items-center">
@@ -77,6 +119,7 @@ if (token && user) {
       </div>
     </header>
 
+    <!-- ✅ Page content -->
     <RouterView />
   </div>
 </template>
@@ -85,6 +128,7 @@ if (token && user) {
 .nav-link {
   color: #374151;
   text-decoration: none;
+  transition: color 0.2s;
 }
 .nav-link:hover {
   color: #2563eb;
