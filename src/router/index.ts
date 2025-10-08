@@ -24,7 +24,8 @@ import OrganizerListView from '@/views/event/OrganizerListView.vue'
 
 // ✅ Auth
 import LoginView from '@/views/event/LoginView.vue'
-import { useAuthStore } from '@/stores/auth'   // ✅ import auth store
+import { useAuthStore } from '@/stores/auth'
+import RegisterView from '@/views/event/RegisterView.vue'   // ✅ import auth store
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -128,6 +129,11 @@ const router = createRouter({
       path: '/network-error',
       name: 'network-error-view',
       component: NetworkErrorView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
     },
     {
       path: '/404/:resource',
