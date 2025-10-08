@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseSelect from '@/components/BaseSelect.vue'
-import ImageUpload from '@/components/ImageUpload.vue'   // ✅ Import ImageUpload
+import ImageUpload from '@/components/ImageUpload.vue' // ✅ Import ImageUpload
 
 // ✅ Event model
 const event = ref<Event>({
@@ -22,17 +22,17 @@ const event = ref<Event>({
     id: 0,
     organizationName: ''
   },
-  images: [],   // ✅ Add images array
+  images: [],
   petAllowed: false
 })
 
-// ✅ Organizers list
+// ✅ Organizer list
 const organizers = ref<{ id: number; organizationName: string }[]>([])
 
 const router = useRouter()
 const store = useMessageStore()
 
-// ✅ Load organizers
+// ✅ Load organizers from backend when mounted
 onMounted(() => {
   OrganizerService.getOrganizers()
     .then((res) => {
@@ -84,11 +84,13 @@ function saveEvent() {
       <BaseInput v-model="event.date" type="date" label="Date" />
       <BaseInput v-model="event.time" type="time" label="Time" />
 
-      <!-- ✅ Organizer dropdown -->
+      <!-- ✅ Fixed Organizer dropdown -->
       <BaseSelect
         v-model="event.organizer.id"
         :options="organizers"
         label="Select Organizer"
+        option-label="organizationName"
+        option-value="id"
       />
 
       <!-- ✅ Image upload -->
@@ -150,3 +152,4 @@ select {
   color: white;
 }
 </style>
+
